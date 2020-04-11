@@ -19,17 +19,18 @@ const Header = styled.header`
 
 const List = styled.ul`
     display: flex;
-    &:hover{
-        background-color: blue;
-    }
 `;
 
 const Item = styled.li`
-    width: 50px;
-    height: 50px;
-    text-align: center;
-    border-bottom: 3px solid ${props => (props.current ? "#3498db" : "transparent")};
-    transition: border-bottom .5s ease-in-out
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  border-bottom: 3px solid
+    ${props => (props.current ? "#3498db" : "transparent")};
+  transition: border-bottom 0.5s ease-in-out;
+  &:hover {
+    background-color: #3498db;
+  }
 `;
 
 const SLink = styled(Link)`
