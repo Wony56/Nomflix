@@ -1,4 +1,5 @@
 import React from "react";
+import ReactLoading from "react-loading";
 import styled, {keyframes} from "styled-components";
 
 const Container = styled.div`
@@ -8,14 +9,16 @@ const Container = styled.div`
     justify-content: center;
     align-items: flex-end;
     margin-top: 20px;
-    font-size: 64px;
 `;
 
 export default () => (
   <Container>
-    <span role="img" aria-label="Loading">
-        ⏰
-    </span>
+    <ReactLoading
+      type={"spin"}
+      color={"#3498db"}
+      height={"80px"}
+      width={"80px"}
+    />
   </Container>
 );
  

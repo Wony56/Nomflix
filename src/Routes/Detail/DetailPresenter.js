@@ -30,6 +30,10 @@ const Content = styled.div`
   position: relative;
   z-index: 1;
   height: 100%;
+
+  @media only screen and (orientation: portrait) {
+    flex-direction: column;
+  }
 `;
 
 const Cover = styled.div`
@@ -39,11 +43,21 @@ const Cover = styled.div`
   background-size: cover;
   height: 100%;
   border-radius: 5px;
+
+  @media only screen and (orientation: portrait) {
+    width: 50vw;
+    height: 40vh;
+    margin-bottom: 30px;
+  }
 `;
 
 const Data = styled.div`
   width: 70%;
   margin-left: 10px;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
 `;
 
 const Title = styled.h3`
@@ -65,6 +79,10 @@ const Overview = styled.p`
   opacity: 0.7;
   line-height: 1.5;
   width: 50%;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
 `;
 
 const DetailPresenter = ({ result, error, loading }) =>
