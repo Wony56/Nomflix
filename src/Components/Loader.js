@@ -1,13 +1,14 @@
 import React from "react";
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 
 const Container = styled.div`
-    height: 100vh;
+    height: 25vh;
     width: 100vw;
     display: flex;
     justify-content: center;
-    font-size: 64px;
+    align-items: flex-end;
     margin-top: 20px;
+    font-size: 64px;
 `;
 
 export default () => (
@@ -17,5 +18,4 @@ export default () => (
     </span>
   </Container>
 );
-
  
