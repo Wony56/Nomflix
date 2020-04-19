@@ -17,6 +17,16 @@ const Header = styled.header`
     box-shadow: 0px 1px 5px 2px rgba(0,0,0,0.8);
 `;
 
+const Logo = styled.div`
+  width: 150px;
+  height: 40px;
+  background-image: url("/logo.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 90px;
+  margin: 0 20px;
+`;
+
 const List = styled.ul`
     display: flex;
 `;
@@ -24,6 +34,8 @@ const List = styled.ul`
 const Item = styled.li`
   width: 50px;
   height: 50px;
+  font-size: 15px;
+  font-weight: bold;
   text-align: center;
   border-bottom: 3px solid
     ${props => (props.current ? "#3498db" : "transparent")};
@@ -42,6 +54,7 @@ const SLink = styled(Link)`
 
 export default withRouter(({ location: { pathname } }) => (
     <Header>
+        <Logo />
         <List>
             <Item current={pathname === "/"}>
                 <SLink to="/">Movies</SLink>

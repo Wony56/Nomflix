@@ -10,8 +10,35 @@ export default class extends React.Component{
           result: null,
           error: null,
           loading: true,
+          isVideoTab: true,
+          isCompaniesTab: false,
+          isCountriesTab: false,
           isMovie: pathname.includes("/movie/")
         };
+    }
+
+    clickVideo = () => {
+        this.setState({
+          isVideoTab: true,
+          isCompaniesTab: false,
+          isCountriesTab: false
+        });
+    }
+
+    clickCompanies = () => {
+        this.setState({
+          isVideoTab: false,
+          isCompaniesTab: true,
+          isCountriesTab: false
+        });
+    }
+
+    clickCountries = () => {
+        this.setState({
+          isVideoTab: false,
+          isCompaniesTab: false,
+          isCountriesTab: true
+        });
     }
 
     async componentDidMount() {
@@ -37,7 +64,6 @@ export default class extends React.Component{
                     data: result
                 } = await tvApi.showDetail(parsedId));
             }
-            console.log(result)
         }catch(error){
             this.setState({
                 error: "Can't find anything."
@@ -51,14 +77,13 @@ export default class extends React.Component{
     }
 
     render() {
-        const {result, error, loading} = this.state;
-        console.log(this.state);
         return (
-            <DetailPresenter 
-                result={result}
-                error={error}
-                loading={loading}
-            />
+          <DetailPresenter
+            {...this.state}
+            clickVideo={this.clickVideo}
+            clickCompanies={this.clickCompanies}
+            clickCountries={this.clickCountries}
+          />
         );
     }
 }

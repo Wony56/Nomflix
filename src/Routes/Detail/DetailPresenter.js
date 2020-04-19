@@ -1,7 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import {Helmet} from "react-helmet";
 import Loader from "Components/Loader";
+import Video from "Components/Video";
+import Company from "Components/Company";
+import Country from "Components/Country";
+import { Link, Router, Route, withRouter } from "react-router-dom";
+
 
 const Container = styled.div`
   height: calc(100vh - 50px);
@@ -62,10 +68,21 @@ const Data = styled.div`
 
 const Title = styled.h3`
   font-size: 32px;
+  display: flex;
+  align-content: flex-start;
+`;
+
+const Imdb = styled.div`
+  display: inline-block;
+  width: 48px;
+  height: 40px;
+  background-image: url("https://img.icons8.com/color/96/000000/imdb.png");
+  background-position: center center;
+  background-size: cover;
 `;
 
 const ItemContainer = styled.div`
-  margin: 20px 0;
+  margin: ${props => (props.imdb ? "5px 0 20px 0" : "20px 0")};
 `;
 
 const Item = styled.span``;
@@ -85,48 +102,176 @@ const Overview = styled.p`
   }
 `;
 
-const DetailPresenter = ({ result, error, loading }) =>
-  loading ? (
-    <Loader />
-  ) : (
-    <Container>
-      <Backdrop
-        bgImage={`https://image.tmdb.org/t/p/original${result.backdrop_path}`}
-      />
-      <Content>
-        <Cover
-          bgImage={
-            result.poster_path
-              ? `https://image.tmdb.org/t/p/original${result.poster_path}`
-              : require("../../assets/noPosterSmall.jpg")
-          }
-        />
-        <Data>
-          <Title>
+const TabContainer = styled.div`
+  margin: 30px 0 20px 0;
+`;
+
+const TabList = styled.ul`
+  font-size: 20px;
+  display: flex;
+`;
+
+const TabItem = styled.li`
+  padding: 15px 20px;
+  border-bottom: 3px solid
+    ${props => (props.current ? "#3498db" : "transparent")};
+  &:hover {
+    background-color: #3498db;
+    opacity: 0.8;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+`;
+
+const TabContents = styled.div``;
+
+const Videos = styled.div`
+  width: 70%;
+  display: flex;
+  overflow: auto;
+`;
+
+const Companies = styled.div`
+  display: flex;
+  width: 70%;
+  height: 200px;
+  overflow: auto;
+`;
+
+const Countries = styled.div`
+  width: 70%;
+  display: flex;
+`;
+
+const DetailPresenter = withRouter(
+  ({
+    location: { pathname },
+    result,
+    error,
+    loading,
+    isVideoTab,
+    isCompaniesTab,
+    isCountriesTab,
+    clickVideo,
+    clickCompanies,
+    clickCountries
+  }) =>
+    loading ? (
+      <>
+        <Helmet>
+          <title>Loading... | Nomflix</title>
+        </Helmet>
+        <Loader />
+      </>
+    ) : (
+      <Container>
+        <Helmet>
+          <title>
             {result.original_title
               ? result.original_title
-              : result.original_name}
-          </Title>
-          <ItemContainer>
-            <Item>
-              {result.release_date
-                ? result.release_date.substring(0, 4)
-                : result.first_air_date.substring(0, 4)}
-            </Item>
-            <Divider>∙</Divider>
-            <Item>
-              {result.runtime !== null ? result.runtime : result.episode_run_time[0]} min
-            </Item>
-            <Divider>∙</Divider>
-            <Item>
-              {result.genres && result.genres.map((genre, index) => index === result.genres.length - 1 ? genre.name : `${genre.name} / `)}
-            </Item>
-          </ItemContainer>
-          <Overview>{result.overview}</Overview>
-        </Data>
-      </Content>
-    </Container>
-  );
+              : result.original_name}{" "}
+            | Nomflix
+          </title>
+        </Helmet>
+        <Backdrop
+          bgImage={`https://image.tmdb.org/t/p/original${result.backdrop_path}`}
+        />
+        <Content>
+          <Cover
+            bgImage={
+              result.poster_path
+                ? `https://image.tmdb.org/t/p/original${result.poster_path}`
+                : require("../../assets/noPosterSmall.jpg")
+            }
+          />
+          <Data>
+            <Title>
+              <span>
+                {result.original_title
+                  ? result.original_title
+                  : result.original_name}
+              </span>
+            </Title>
+            {result.imdb_id && (
+              <a
+                href={`https://www.imdb.com/title/${result.imdb_id}`}
+                target="_blank"
+              >
+                <Imdb />
+              </a>
+            )}
+            <ItemContainer imdb={result.imdb_id}>
+              <Item>
+                {result.release_date
+                  ? result.release_date.substring(0, 4)
+                  : result.first_air_date.substring(0, 4)}
+              </Item>
+              <Divider>∙</Divider>
+              <Item>
+                {result.runtime && result.runtime}
+                {result.episode_run_time && result.episode_run_time[0]}
+                {result.runtime === null && !result.episode_run_time === null && "-"}
+                {" "}
+                min
+              </Item>
+              <Divider>∙</Divider>
+              <Item>
+                {result.genres &&
+                  result.genres.map((genre, index) =>
+                    index === result.genres.length - 1
+                      ? genre.name
+                      : `${genre.name} / `
+                  )}
+              </Item>
+            </ItemContainer>
+            <Overview>{result.overview}</Overview>
+            <TabContainer>
+              <TabList>
+                {result.videos.results && (
+                  <TabItem current={isVideoTab} onClick={clickVideo}>
+                    Videos ({result.videos.results.length})
+                  </TabItem>
+                )}
+                {result.production_companies && (
+                  <TabItem current={isCompaniesTab} onClick={clickCompanies}>
+                    Companies ({result.production_companies.length})
+                  </TabItem>
+                )}
+                {result.production_countries && (
+                  <TabItem current={isCountriesTab} onClick={clickCountries}>
+                    Countries ({result.production_countries.length})
+                  </TabItem>
+                )}
+              </TabList>
+            </TabContainer>
+            <TabContents>
+              {isVideoTab && (
+                <Videos>
+                  {result.videos.results.map(video => (
+                    <Video key={video.id} id={video.id} v_key={video.key} />
+                  ))}
+                </Videos>
+              )}
+              {isCompaniesTab && (
+                <Companies>
+                  {result.production_companies.map(company => (
+                    <Company key={company.id} {...company} />
+                  ))}
+                </Companies>
+              )}
+              {isCountriesTab && (
+                <Countries>
+                  {result.production_countries.map(country => (
+                    <Country {...country} />
+                  ))}
+                </Countries>
+              )}
+            </TabContents>
+          </Data>
+        </Content>
+      </Container>
+    )
+);
 
 DetailPresenter.propTypes = {
   result: PropTypes.object,
