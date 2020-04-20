@@ -13,6 +13,7 @@ export default class extends React.Component{
           isVideoTab: true,
           isCompaniesTab: false,
           isCountriesTab: false,
+          isSeasonsTab: false,
           isMovie: pathname.includes("/movie/")
         };
     }
@@ -21,7 +22,8 @@ export default class extends React.Component{
         this.setState({
           isVideoTab: true,
           isCompaniesTab: false,
-          isCountriesTab: false
+          isCountriesTab: false,
+          isSeasonsTab: false
         });
     }
 
@@ -29,7 +31,8 @@ export default class extends React.Component{
         this.setState({
           isVideoTab: false,
           isCompaniesTab: true,
-          isCountriesTab: false
+          isCountriesTab: false,
+          isSeasonsTab: false
         });
     }
 
@@ -37,7 +40,17 @@ export default class extends React.Component{
         this.setState({
           isVideoTab: false,
           isCompaniesTab: false,
-          isCountriesTab: true
+          isCountriesTab: true,
+          isSeasonsTab: false
+        });
+    }
+
+    clickSeasons = () => {
+        this.setState({
+          isVideoTab: false,
+          isCompaniesTab: false,
+          isCountriesTab: false,
+          isSeasonsTab: true
         });
     }
 
@@ -83,6 +96,7 @@ export default class extends React.Component{
             clickVideo={this.clickVideo}
             clickCompanies={this.clickCompanies}
             clickCountries={this.clickCountries}
+            clickSeasons={this.clickSeasons}
           />
         );
     }

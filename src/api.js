@@ -48,5 +48,12 @@ export const moviesApi = {
                ...parameters["params"],
                query: encodeURIComponent(term)
              }
+           }),
+         collections: id =>
+           api.get(`collection/${id}`, {
+             params: {
+               api_key: process.env.REACT_APP_API_KEY,
+               language: "en-US"
+             }
            })
        };

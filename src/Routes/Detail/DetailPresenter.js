@@ -6,7 +6,8 @@ import Loader from "Components/Loader";
 import Video from "Components/Video";
 import Company from "Components/Company";
 import Country from "Components/Country";
-import { Link, Router, Route, withRouter } from "react-router-dom";
+import Season from "Components/Season";
+import { Link, withRouter } from "react-router-dom";
 
 
 const Container = styled.div`
@@ -51,9 +52,7 @@ const Cover = styled.div`
   border-radius: 5px;
 
   @media only screen and (orientation: portrait) {
-    width: 50vw;
-    height: 40vh;
-    margin-bottom: 30px;
+    display: none;
   }
 `;
 
@@ -63,6 +62,7 @@ const Data = styled.div`
 
   @media only screen and (orientation: portrait) {
     width: 100%;
+    margin-left: 0;
   }
 `;
 
@@ -72,6 +72,11 @@ const Title = styled.h3`
   align-content: flex-start;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 const Imdb = styled.div`
   display: inline-block;
   width: 48px;
@@ -79,6 +84,16 @@ const Imdb = styled.div`
   background-image: url("https://img.icons8.com/color/96/000000/imdb.png");
   background-position: center center;
   background-size: cover;
+`;
+
+const Collection = styled(Link)`
+  margin-left: 10px;
+  padding: 5px;
+  background-color: white;
+  color: black;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 15px;
 `;
 
 const ItemContainer = styled.div`
@@ -126,21 +141,47 @@ const TabItem = styled.li`
 const TabContents = styled.div``;
 
 const Videos = styled.div`
-  width: 70%;
+  width: 75%;
+  height: 250px;
   display: flex;
   overflow: auto;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
 `;
 
 const Companies = styled.div`
   display: flex;
-  width: 70%;
-  height: 200px;
+  width: 75%;
+  height: 250px;
   overflow: auto;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
 `;
 
 const Countries = styled.div`
-  width: 70%;
+  width: 75%;
   display: flex;
+  height: 250px;
+  overflow: auto;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
+`;
+
+const Seasons = styled.div`
+  width: 75%;
+  height: 250px;
+  display: flex;
+  overflow: auto;
+
+  @media only screen and (orientation: portrait) {
+    width: 100%;
+  }
 `;
 
 const DetailPresenter = withRouter(
@@ -152,9 +193,11 @@ const DetailPresenter = withRouter(
     isVideoTab,
     isCompaniesTab,
     isCountriesTab,
+    isSeasonsTab,
     clickVideo,
     clickCompanies,
-    clickCountries
+    clickCountries,
+    clickSeasons
   }) =>
     loading ? (
       <>
@@ -192,26 +235,36 @@ const DetailPresenter = withRouter(
                   : result.original_name}
               </span>
             </Title>
-            {result.imdb_id && (
-              <a
-                href={`https://www.imdb.com/title/${result.imdb_id}`}
-                target="_blank"
-              >
-                <Imdb />
-              </a>
-            )}
+            <ButtonContainer>
+              {result.imdb_id && (
+                <a
+                  href={`https://www.imdb.com/title/${result.imdb_id}`}
+                  target="_blank"
+                >
+                  <Imdb />
+                </a>
+              )}
+              {result.belongs_to_collection && (
+                <Collection
+                  to={`/collections/${result.belongs_to_collection.id}`}
+                >
+                  COLLECTION
+                </Collection>
+              )}
+            </ButtonContainer>
             <ItemContainer imdb={result.imdb_id}>
               <Item>
                 {result.release_date
                   ? result.release_date.substring(0, 4)
-                  : result.first_air_date.substring(0, 4)}
+                  : result.first_air_date ? result.first_air_date.substring(0, 4) : " - "}
               </Item>
               <Divider>∙</Divider>
               <Item>
                 {result.runtime && result.runtime}
                 {result.episode_run_time && result.episode_run_time[0]}
-                {result.runtime === null && !result.episode_run_time === null && "-"}
-                {" "}
+                {result.runtime === null &&
+                  !result.episode_run_time === null &&
+                  "-"}{" "}
                 min
               </Item>
               <Divider>∙</Divider>
@@ -242,6 +295,11 @@ const DetailPresenter = withRouter(
                     Countries ({result.production_countries.length})
                   </TabItem>
                 )}
+                {result.seasons && (
+                  <TabItem current={isSeasonsTab} onClick={clickSeasons}>
+                    Seasons ({result.seasons.length})
+                  </TabItem>
+                )}
               </TabList>
             </TabContainer>
             <TabContents>
@@ -265,6 +323,13 @@ const DetailPresenter = withRouter(
                     <Country {...country} />
                   ))}
                 </Countries>
+              )}
+              {isSeasonsTab && (
+                <Seasons>
+                  {result.seasons.map(season => (
+                    <Season key={season.id} {...season} />
+                  ))}
+                </Seasons>
               )}
             </TabContents>
           </Data>
