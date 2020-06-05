@@ -341,6 +341,8 @@
 
 
 ### 3. Search
+- 입력한 단어를 포함하는 영화 및 TV시리즈의 데이터를 조회함.
+
 <img src="./README_IMAGES/search.png" witdh="640px"></img>
 <img src="./README_IMAGES/search_result.png" witdh="640px"></img>
 
@@ -459,7 +461,7 @@
     }) => (
         <Container>
             <Helmet>
-            <title>Search | Nomflix</title>
+                <title>Search | Nomflix</title>
             </Helmet>
             <Form onSubmit={handleSubmit}>
                 <Input
@@ -533,3 +535,116 @@
 ### 영화 및 TV 시리즈 상세 페이지
 <img src="./README_IMAGES/movie_detail.png" width="480px"></img>
 <img src="./README_IMAGES/tv_detail.png" width="480px"></img>
+
+- <b>[DetailContainer.js]</b>
+    ```javascript
+    import React from "react";
+    import DetailPresenter from "./DetailPresenter";
+    import { moviesApi, tvApi } from "api";
+
+    export default class extends React.Component{
+        constructor(props){
+            super(props);
+            const {location: { pathname }} = props;
+            this.state = {
+                result: null,
+                error: null,
+                loading: true,
+                isVideoTab: true,
+                isCompaniesTab: false,
+                isCountriesTab: false,
+                isSeasonsTab: false,
+                isMovie: pathname.includes("/movie/")
+            };
+        }
+
+        // 상세페이지의 Video 탭을 클릭했을 때 호출되는 콜백함수
+        clickVideo = () => {
+            this.setState({
+                isVideoTab: true,
+                isCompaniesTab: false,
+                isCountriesTab: false,
+                isSeasonsTab: false
+            });
+        }
+
+        // Companies(제작사) 탭을 클릭했을 때 호출되는 콜백함수
+        clickCompanies = () => {
+            this.setState({
+                isVideoTab: false,
+                isCompaniesTab: true,
+                isCountriesTab: false,
+                isSeasonsTab: false
+            });
+        }
+
+        // Countries(제작국가) 탭을 클릭했을 때 호출되는 콜백함수
+        clickCountries = () => {
+            this.setState({
+                isVideoTab: false,
+                isCompaniesTab: false,
+                isCountriesTab: true,
+                isSeasonsTab: false
+            });
+        }
+
+        // TV 시리즈의 시즌 탭을 클릭했을 때 호출되는 콜백함수
+        clickSeasons = () => {
+            this.setState({
+                isVideoTab: false,
+                isCompaniesTab: false,
+                isCountriesTab: false,
+                isSeasonsTab: true
+            });
+        }
+
+        // 페이지가 그려지기 전 url에 포함되어있는 영화 또는 TV시리즈의 ID값을 가져와
+        // TMDb의 API를 호출
+        async componentDidMount() {
+            const {
+                match: {
+                    params: { id }
+                },
+                history: { push }
+            } = this.props;
+            const { isMovie } = this.state;
+            const parsedId = parseInt(id);
+            if (isNaN(parsedId)) {
+                return push('/');
+            }
+            let result = null;
+            try{
+                if(isMovie){
+                    ({
+                        data: result
+                    } = await moviesApi.movieDetail(parsedId));
+                }else{
+                    ({
+                        data: result
+                    } = await tvApi.showDetail(parsedId));
+                }
+            }catch(error){
+                this.setState({
+                    error: "Can't find anything."
+                })
+            }finally{
+                this.setState({
+                    loading: false,
+                    result
+                })
+            }
+        }
+
+        render() {
+            return (
+                <DetailPresenter
+                    {...this.state}
+                    clickVideo={this.clickVideo}
+                    clickCompanies={this.clickCompanies}
+                    clickCountries={this.clickCountries}
+                    clickSeasons={this.clickSeasons}
+                />
+            );
+        }
+    }
+    ```
