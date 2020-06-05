@@ -14,121 +14,185 @@
 
 ## 구현 소개
 ### 1. TMDb API 모듈
-<img src="./README_IMAGES/TMDb.png" width="640px"></img>
+<a href="https://www.themoviedb.org/"><img src="./README_IMAGES/TMDb.png" width="640px"></img></a>
+
+- [api.js]
+    ```javascript
+    import axios from "axios";
+
+    const api = axios.create({
+    baseURL: "https://api.themoviedb.org/3/"
+    });
+
+    const parameters = {
+    params: {
+    api_key: process.env.REACT_APP_API_KEY,
+    language: "en-US"
+    }
+    };
+
+    export const tvApi = {
+        topRated: () => api.get("tv/top_rated", parameters),
+        popular: () => api.get("tv/popular", parameters),
+        airingToday: () => api.get("tv/airing_today", parameters),
+        showDetail: id =>
+        api.get(`tv/${id}`, {
+            params: {
+            ...parameters["params"],
+            append_to_response: "videos"
+            }
+        }),
+        search: term =>
+        api.get("search/tv", {
+            params: {
+            ...parameters["params"],
+            query: encodeURIComponent(term)
+            }
+        })
+    };
+
+    export const moviesApi = {
+        nowPlaying: () => api.get("movie/now_playing", parameters),
+        upcoming: () => api.get("movie/upcoming", parameters),
+        popular: () => api.get("movie/popular", parameters),
+        movieDetail: id =>
+        api.get(`movie/${id}`, {
+            params: {
+            ...parameters["params"],
+            append_to_response: "videos"
+            }
+        }),
+        search: term =>
+        api.get("search/movie", {
+            params: {
+            ...parameters["params"],
+            query: encodeURIComponent(term)
+            }
+        }),
+        collections: id =>
+        api.get(`collection/${id}`, {
+            params: {
+            api_key: process.env.REACT_APP_API_KEY,
+            language: "en-US"
+            }
+        })
+    };
+    ```
+
 
 ### 2. Header
 - Router모듈에 Header모듈과 라우트를 함께 작성.
 
-[Router.js]
-```javascript
-import React from 'react';
-import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
-import Header from 'Components/Header';
-import Home from 'Routes/Home';
-import TV from 'Routes/TV';
-import Search from 'Routes/Search';
-import Detail from 'Routes/Detail';
-import Collection from 'Routes/Collection';
+- [Router.js]
+    ```javascript
+    import React from 'react';
+    import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
+    import Header from 'Components/Header';
+    import Home from 'Routes/Home';
+    import TV from 'Routes/TV';
+    import Search from 'Routes/Search';
+    import Detail from 'Routes/Detail';
+    import Collection from 'Routes/Collection';
 
-export default () => (
-  <Router>
-    <>
-      <Header />
-      <Switch>
-        <Route path="/" exact component={Home} />
-        <Route path="/tv" exact component={TV} />
-        <Route path="/search" component={Search} />
-        <Route path="/movie/:id" component={Detail} />
-        <Route path="/show/:id" component={Detail} />
-        <Route path="/collections/:id" component={Collection} />
-        <Redirect from="*" to="/" />
-      </Switch>
-    </>
-  </Router>
-);
-```
-- Router안에 Link와 Route를 함께 써줌으로써 path값에 따른 컴포넌트를 웹 페이지상에 그림.
+    export default () => (
+    <Router>
+        <>
+        <Header />
+        <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/tv" exact component={TV} />
+            <Route path="/search" component={Search} />
+            <Route path="/movie/:id" component={Detail} />
+            <Route path="/show/:id" component={Detail} />
+            <Route path="/collections/:id" component={Collection} />
+            <Redirect from="*" to="/" />
+        </Switch>
+        </>
+    </Router>
+    );
+    ```
+    - Router안에 Link와 Route를 함께 써줌으로써 path값에 따른 컴포넌트를 웹 페이지상에 그림.
 
-[Header.js]
-```javascript
-import React from "react";
-import { Link, withRouter } from "react-router-dom";
-import styled from "styled-components";
+- [Header.js]
+    ```javascript
+    import React from "react";
+    import { Link, withRouter } from "react-router-dom";
+    import styled from "styled-components";
 
-const Header = styled.header`
-    color: white;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
+    const Header = styled.header`
+        color: white;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        padding: 0px 10px;
+        background-color: rgba(20, 20, 20, 0.8);
+        z-index: 10;
+        box-shadow: 0px 1px 5px 2px rgba(0,0,0,0.8);
+    `;
+
+    const Logo = styled.div`
+    width: 150px;
+    height: 40px;
+    background-image: url("/logo.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 90px;
+    margin: 0 20px;
+    `;
+
+    const List = styled.ul`
+        display: flex;
+    `;
+
+    const Item = styled.li`
+    width: 50px;
     height: 50px;
-    display: flex;
-    align-items: center;
-    padding: 0px 10px;
-    background-color: rgba(20, 20, 20, 0.8);
-    z-index: 10;
-    box-shadow: 0px 1px 5px 2px rgba(0,0,0,0.8);
-`;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    border-bottom: 3px solid
+        ${props => (props.current ? "#3498db" : "transparent")};
+    transition: border-bottom 0.5s ease-in-out;
+    &:hover {
+        background-color: #3498db;
+    }
+    `;
 
-const Logo = styled.div`
-  width: 150px;
-  height: 40px;
-  background-image: url("/logo.png");
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 90px;
-  margin: 0 20px;
-`;
+    const SLink = styled(Link)`
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
 
-const List = styled.ul`
-    display: flex;
-`;
-
-const Item = styled.li`
-  width: 50px;
-  height: 50px;
-  font-size: 15px;
-  font-weight: bold;
-  text-align: center;
-  border-bottom: 3px solid
-    ${props => (props.current ? "#3498db" : "transparent")};
-  transition: border-bottom 0.5s ease-in-out;
-  &:hover {
-    background-color: #3498db;
-  }
-`;
-
-const SLink = styled(Link)`
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-`;
-
-export default withRouter(({ location: { pathname } }) => (
-    <Header>
-        <Logo />
-        <List>
-            <Item current={pathname === "/"}>
-                <SLink to="/">Movies</SLink>
-            </Item>
-            <Item current={pathname === "/tv"}>
-                <SLink to="/tv">TV</SLink>
-            </Item>
-            <Item current={pathname === "/search"}>
-                <SLink to="/search">Search</SLink>
-            </Item>
-        </List>
-    </Header>
-));
-```
-- location객체를 사용하기 위해 withRouter를 사용.
-- 메뉴 버튼을 클릭한 것을 CSS로 나타내주기 위해 Item에 current를 추가하였고 pathname에 따라 true/false의 값을 가짐. 또한 current는 styled-components에서 props로 접근 가능.
+    export default withRouter(({ location: { pathname } }) => (
+        <Header>
+            <Logo />
+            <List>
+                <Item current={pathname === "/"}>
+                    <SLink to="/">Movies</SLink>
+                </Item>
+                <Item current={pathname === "/tv"}>
+                    <SLink to="/tv">TV</SLink>
+                </Item>
+                <Item current={pathname === "/search"}>
+                    <SLink to="/search">Search</SLink>
+                </Item>
+            </List>
+        </Header>
+    ));
+    ```
+    - location객체를 사용하기 위해 withRouter를 사용.
+    - 메뉴 버튼을 클릭한 것을 CSS로 나타내주기 위해 Item에 current를 추가하였고 pathname에 따라 true/false의 값을 가짐. 또한 current는 styled-components에서 props로 접근 가능.
 
 ### 2. Home(Movie page) & TV(TV Series page)
 - 현재 상영 중인, 개봉 예정인, 인기 있는 영화들을 보여주는 페이지.
 
-    [HomeContainer.js]
+- [HomeContainer.js]
     ```javascript
     import React from "react";
     import HomePresenter from "./HomePresenter";
@@ -183,7 +247,7 @@ export default withRouter(({ location: { pathname } }) => (
         }
     }
     ``` 
-    [HomePresenter.js]
+- [HomePresenter.js]
     ```javascript
     import React from "react";
     import PropTypes from "prop-types";
