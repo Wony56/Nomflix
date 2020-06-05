@@ -11,7 +11,9 @@
     ![Container/Presenter 패턴](README_IMAGES/container_presenter.png)
 
 ## 구현 소개
-### 1. Header
+### 1. TMDb API 모듈
+<img src="./README_IMAGES/TMDb.png" width="640px" />
+### 2. Header
 - Router모듈에 Header모듈과 라우트를 함께 작성.
 
 [Router.js]
