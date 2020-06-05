@@ -86,7 +86,7 @@
 ### 2. Header
 - Router모듈에 Header모듈과 라우트를 함께 작성.
 
-- [Router.js]
+- <b>[Router.js]</b>
     ```javascript
     import React from 'react';
     import { BrowserRouter as Router, Route, Redirect, Switch } from 'react-router-dom';
@@ -116,7 +116,7 @@
     ```
     - Router안에 Link와 Route를 함께 써줌으로써 path값에 따른 컴포넌트를 웹 페이지상에 그림.
 
-- [Header.js]
+- <b>[Header.js]</b>
     ```javascript
     import React from "react";
     import { Link, withRouter } from "react-router-dom";
@@ -195,7 +195,7 @@
 ### 2. Home(Movie page) & TV(TV Series page)
 - 현재 상영 중인, 개봉 예정인, 인기 있는 영화들을 보여주는 페이지.
 
-- [HomeContainer.js]
+- <b>[HomeContainer.js]</b>
     ```javascript
     import React from "react";
     import HomePresenter from "./HomePresenter";
@@ -250,7 +250,7 @@
         }
     }
     ``` 
-- [HomePresenter.js]
+- <b>[HomePresenter.js]</b>
     ```javascript
     import React from "react";
     import PropTypes from "prop-types";
@@ -340,6 +340,89 @@
     - TV시리즈에 해당하는 Container모듈과 Presenter모듈 역시 위의 코드와 유사함.
 
 
+### 3. Search
+<img src="./README_IMAGES/search.png" witdh="640px"></img>
+<img src="./README_IMAGES/search_result.png" witdh="640px"></img>
+
+- <b>[SearchContainer.js]</b>
+    ```javascript
+    import React from "react";
+    import SearchPresenter from "./SearchPresenter";
+    import { moviesApi, tvApi } from "api";
+
+    export default class extends React.Component{
+        state = {
+            movieResults: null,
+            tvResults: null,
+            searchTerm: "",
+            loading: false,
+            error: null
+        };
+
+        // SearchPresenter에서의 submit 이벤트에 대한 콜백함수
+        handleSubmit = event => {
+            event.preventDefault();
+            const { searchTerm } = this.state;
+            if(searchTerm !== "") {
+                this.searchByTerm();
+            }
+        }
+
+        //검색창의 change 이벤트에 대한 콜백함수
+        updateTerm = (event) => {
+            const {
+                target: { value }
+            } = event;
+            this.setState({
+                searchTerm: value
+            });
+        }
+
+        // handleSubmit에서 호출함, 검색단어로 영화 및 TV시리즈 검색
+        searchByTerm = async () => {
+            const { searchTerm } = this.state;
+            try{
+                this.setState({ loading: true });
+                const {
+                    data: { results: movieResults }
+                } = await moviesApi.search(searchTerm);
+                const {
+                    data: { results: tvResults }
+                } = await tvApi.search(searchTerm);
+                this.setState({
+                    movieResults,
+                    tvResults
+                });
+            }catch(error){
+                this.setState({
+                    error: "Can't find results."
+                })
+            }finally{
+                this.setState({
+                    loading: false
+                })
+            }
+        }
+
+        render() {
+            const {movieResults, tvResults, searchTerm, loading, error} = this.state;
+            console.log(this.state);
+            return (
+                <SearchPresenter
+                    movieResults={movieResults}
+                    tvResults={tvResults}
+                    searchTerm={searchTerm}
+                    loading={loading}
+                    error={error}
+                    handleSubmit={this.handleSubmit}
+                    updateTerm={this.updateTerm}
+                />
+            );
+        }
+    }
+    ```
+
+    
 ## Screens
 
 - [x] Home
