@@ -16,21 +16,23 @@
 ### 1. TMDb API 모듈
 <a href="https://www.themoviedb.org/"><img src="./README_IMAGES/TMDb.png" width="640px"></img></a>
 
-- [api.js]
+- <b>[api.js]</b>
     ```javascript
     import axios from "axios";
 
+    // TMDb API 도메인으로 api 객체 생성
     const api = axios.create({
-    baseURL: "https://api.themoviedb.org/3/"
+        baseURL: "https://api.themoviedb.org/3/"
     });
 
     const parameters = {
-    params: {
-    api_key: process.env.REACT_APP_API_KEY,
-    language: "en-US"
-    }
+        params: {
+            api_key: process.env.REACT_APP_API_KEY,
+            language: "en-US"
+        }
     };
 
+    // TV 시리즈 관련 데이터를 요청하는 API
     export const tvApi = {
         topRated: () => api.get("tv/top_rated", parameters),
         popular: () => api.get("tv/popular", parameters),
@@ -38,19 +40,20 @@
         showDetail: id =>
         api.get(`tv/${id}`, {
             params: {
-            ...parameters["params"],
-            append_to_response: "videos"
+                ...parameters["params"],
+                append_to_response: "videos"
             }
         }),
         search: term =>
         api.get("search/tv", {
             params: {
-            ...parameters["params"],
-            query: encodeURIComponent(term)
+                ...parameters["params"],
+                query: encodeURIComponent(term)
             }
         })
     };
 
+    // 영화와 관련된 데이터를 요청하는 API
     export const moviesApi = {
         nowPlaying: () => api.get("movie/now_playing", parameters),
         upcoming: () => api.get("movie/upcoming", parameters),
@@ -58,22 +61,22 @@
         movieDetail: id =>
         api.get(`movie/${id}`, {
             params: {
-            ...parameters["params"],
-            append_to_response: "videos"
+                ...parameters["params"],
+                append_to_response: "videos"
             }
         }),
         search: term =>
         api.get("search/movie", {
             params: {
-            ...parameters["params"],
-            query: encodeURIComponent(term)
+                ...parameters["params"],
+                query: encodeURIComponent(term)
             }
         }),
         collections: id =>
         api.get(`collection/${id}`, {
             params: {
-            api_key: process.env.REACT_APP_API_KEY,
-            language: "en-US"
+                api_key: process.env.REACT_APP_API_KEY,
+                language: "en-US"
             }
         })
     };
