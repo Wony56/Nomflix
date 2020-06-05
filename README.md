@@ -8,6 +8,7 @@
 - TMDb의 API를 통해 영화 및 TV시리즈의 데이터를 이용하여 개발.
 - styled-components를 사용하여 스타일링.
 - Container/Presenter 패턴으로 개발.
+
 <img src="./README_IMAGES/container_presenter.png" width="400px"></img>
 
 ## 구현 소개
