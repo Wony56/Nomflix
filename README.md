@@ -1,6 +1,14 @@
 # Nomflix
 ## 목차
-
+- [개요](##개요)<br/>
+- [구현소개](##구현-소개)<br/>
+    - [1. TMDb API 모듈](###1.-TMDb-API-모듈)
+    - [2. Header](###2.-Header)
+    - [3. Home(Movie page) & TV(TV Series page)](###3.-Home(Movie-page)-&-TV(TV-Series-page))
+    - [4. Search](###4.-Search)
+    - [5. 영화 및 TV 시리즈 상세 페이지](###5.-영화-및-TV-시리즈-상세-페이지)
+    - [6. Collection](###6.-Collection)
+    
 ## 개요
 <a href="https://distracted-jang-0e67d3.netlify.app/" target="_blank"><img src="./README_IMAGES/result.png" width="640px"></img></a>
 
@@ -192,7 +200,7 @@
     - location객체를 사용하기 위해 withRouter를 사용.
     - 메뉴 버튼을 클릭한 것을 CSS로 나타내주기 위해 Item에 current를 추가하였고 pathname에 따라 true/false의 값을 가짐. 또한 current는 styled-components에서 props로 접근 가능.
 
-### 2. Home(Movie page) & TV(TV Series page)
+### 3. Home(Movie page) & TV(TV Series page)
 - 현재 상영 중인, 개봉 예정인, 인기 있는 영화들을 보여주는 페이지.
 
 - <b>[HomeContainer.js]</b>
@@ -340,7 +348,7 @@
     - TV시리즈에 해당하는 Container모듈과 Presenter모듈 역시 위의 코드와 유사함.
 
 
-### 3. Search
+### 4. Search
 - 입력한 단어를 포함하는 영화 및 TV시리즈의 데이터를 조회함.
 
 <img src="./README_IMAGES/search.png" witdh="640px"></img>
@@ -532,7 +540,7 @@
 
     ```
 
-### 영화 및 TV 시리즈 상세 페이지
+### 5. 영화 및 TV 시리즈 상세 페이지
 <img src="./README_IMAGES/movie_detail.png" width="480px"></img>
 <img src="./README_IMAGES/tv_detail.png" width="480px"></img>
 
@@ -647,4 +655,171 @@
             );
         }
     }
+    ```
+
+### 6. Collection
+- 영화의 경우 후속작이 있는 경우 collection이라는 이름으로 데이터가 주어짐.
+- Container/Presenter 패턴이 아닌 Hooks로 구현.
+- [Routes/Collection/index.js]
+    ```javascript
+    import React, {useState, useEffect} from "react";
+    import {withRouter, useParams} from "react-router-dom";
+    import styled from "styled-components";
+    import {Helmet} from "react-helmet";
+    import {moviesApi} from "api";
+
+    import Loader from "Components/Loader";
+    import Part from "Components/Part";
+
+    const Container = styled.div`
+        height: calc(100vh - 50px);
+        width: 100%;
+        position: relative;
+        padding: 50px;
+    `;
+
+    const Backdrop = styled.div`
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url(${props => props.bgImage});
+        background-position: center center;
+        background-size: cover;
+        filter: blur(3px);
+        opacity: 0.5;
+        z-index: 0;
+    `;
+
+    const Content = styled.div`
+        width: 100%;
+        height: 100%;
+        display: flex;
+        position: relative;
+        z-index: 1;
+    `;
+
+    const Cover = styled.div`
+    width: 30%;
+    height: 100%;
+    margin-right: 10px;
+
+    @media only screen and (orientation: portrait) {
+        display: none;
+    }
+    `;
+
+    const CoverImg = styled.img`
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    `;
+
+    const Data = styled.div`
+    width: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @media only screen and (orientation: portrait) {
+        width: 100%;
+    }
+    `;
+
+    const TextContainer = styled.div`
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    `;
+
+    const Title = styled.h3`
+        font-size: 32px;
+        display: flex;
+        align-content: flex-start;
+    `;
+
+    const Overview = styled.p`
+    margin: 30px 0;
+    width: 60%;
+
+    @media only screen and (orientation: portrait) {
+        width: 100%;
+    }
+    `;
+
+    const Parts = styled.div`
+        width: 60%;
+        height: 70%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 125px);
+        grid-gap: 10px;
+        justify-content: center;
+        overflow: auto;
+
+        @media only screen and (orientation: portrait) {
+            width: 100%;
+        }
+    `;
+
+    export default () => {
+    const [collection, setCollection] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const {id} = useParams();
+
+    const getCollection = async id => {
+        try {
+            const {data: collection} = await moviesApi.collections(id);
+            setCollection(collection);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getCollection(id);
+    }, [id]);
+
+    return loading ? (
+            <>
+                <Helmet>
+                    <title>Loading... | Nomflix</title>
+                </Helmet>
+                <Loader />
+            </>
+        ) : (
+            <Container>
+            <Helmet>
+                <title>{collection.name} | Nomflix</title>
+            </Helmet>
+            <Backdrop
+                bgImage={`https://image.tmdb.org/t/p/original${collection.backdrop_path}`}
+            />
+                <Content>
+                    <Cover>
+                        <CoverImg
+                            src={
+                                collection.poster_path
+                                    ? `https://image.tmdb.org/t/p/original${collection.poster_path}`
+                                    : require("assets/noPosterSmall.jpg")
+                            }
+                        />
+                    </Cover>
+                    <Data>
+                        <TextContainer>
+                            <Title>{collection.name}</Title>
+                            <Overview>{collection.overview}</Overview>
+                        </TextContainer>
+                        <Parts>
+                            {collection.parts &&
+                            collection.parts.map(part => <Part {...part} />)}
+                        </Parts>
+                    </Data>
+                </Content>
+            </Container>
+        );
+    };
     ```
