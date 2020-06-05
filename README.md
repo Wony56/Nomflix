@@ -2,7 +2,8 @@
 ## 목차
 
 ## 개요
-![Result](README_IMAGES/result.png)
+<img src="./README_IMAGES/result.png" width="640px"></img>
+
 [배포 사이트](https://distracted-jang-0e67d3.netlify.app/)
 - Nomad Coder의 ReactJS 2주 챌린지에 참가하면서 개발.
 - TMDb의 API를 통해 영화 및 TV시리즈의 데이터를 이용하여 개발.
