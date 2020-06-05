@@ -8,11 +8,12 @@
 - TMDb의 API를 통해 영화 및 TV시리즈의 데이터를 이용하여 개발.
 - styled-components를 사용하여 스타일링.
 - Container/Presenter 패턴으로 개발.
-    ![Container/Presenter 패턴](README_IMAGES/container_presenter.png)
+    <img src="./README_IMAGES/container_presenter.png" width="400px"></img>
 
 ## 구현 소개
 ### 1. TMDb API 모듈
-<img src="./README_IMAGES/TMDb.png" width="640px" />
+<img src="./README_IMAGES/TMDb.png" width="640px"></img>
+
 ### 2. Header
 - Router모듈에 Header모듈과 라우트를 함께 작성.
 
