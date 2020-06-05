@@ -2,7 +2,7 @@
 ## 목차
 
 ## 개요
-<img src="./README_IMAGES/result.png" width="640px"></img>
+<a href="https://distracted-jang-0e67d3.netlify.app/" target="_blank"><img src="./README_IMAGES/result.png" width="640px"></img></a>
 
 [배포 사이트](https://distracted-jang-0e67d3.netlify.app/)
 - Nomad Coder의 ReactJS 2주 챌린지에 참가하면서 개발.
@@ -14,7 +14,7 @@
 
 ## 구현 소개
 ### 1. TMDb API 모듈
-<a href="https://www.themoviedb.org/"><img src="./README_IMAGES/TMDb.png" width="640px"></img></a>
+<a href="https://www.themoviedb.org/" target="_blank"><img src="./README_IMAGES/TMDb.png" width="640px"></img></a>
 
 - <b>[api.js]</b>
     ```javascript
