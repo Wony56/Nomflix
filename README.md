@@ -138,13 +138,13 @@
     `;
 
     const Logo = styled.div`
-    width: 150px;
-    height: 40px;
-    background-image: url("/logo.png");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 90px;
-    margin: 0 20px;
+        width: 150px;
+        height: 40px;
+        background-image: url("/logo.png");
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: 90px;
+        margin: 0 20px;
     `;
 
     const List = styled.ul`
@@ -152,17 +152,17 @@
     `;
 
     const Item = styled.li`
-    width: 50px;
-    height: 50px;
-    font-size: 15px;
-    font-weight: bold;
-    text-align: center;
-    border-bottom: 3px solid
-        ${props => (props.current ? "#3498db" : "transparent")};
-    transition: border-bottom 0.5s ease-in-out;
-    &:hover {
-        background-color: #3498db;
-    }
+        width: 50px;
+        height: 50px;
+        font-size: 15px;
+        font-weight: bold;
+        text-align: center;
+        border-bottom: 3px solid
+            ${props => (props.current ? "#3498db" : "transparent")};
+        transition: border-bottom 0.5s ease-in-out;
+        &:hover {
+            background-color: #3498db;
+        }
     `;
 
     const SLink = styled(Link)`
@@ -218,19 +218,19 @@
             const {data: {results: popular}} = await moviesApi.popular();
 
             this.setState({
-            nowPlaying,
-            upcoming,
-            popular
+                nowPlaying,
+                upcoming,
+                popular
             });
 
         }catch(error){
             this.setState({
-            error: "Can't find movie information."
+                error: "Can't find movie information."
             })
 
         }finally{
             this.setState({
-            loading: false
+                loading: false
             })
         }
         }
@@ -326,11 +326,11 @@
     );
 
     HomePresenter.propTypes = {
-    nowPlaying: PropTypes.array,
-    upcoming: PropTypes.array,
-    popular: PropTypes.array,
-    error: PropTypes.string,
-    loading: PropTypes.bool.isRequired
+        nowPlaying: PropTypes.array,
+        upcoming: PropTypes.array,
+        popular: PropTypes.array,
+        error: PropTypes.string,
+        loading: PropTypes.bool.isRequired
     };
 
     export default HomePresenter;
@@ -422,29 +422,110 @@
     }
     ```
 
-    
-## Screens
+- <b>[SearchPresenter.js]</b>
+    ```javascript
+    import React from "react";
+    import PropTypes from "prop-types";
+    import styled from "styled-components";
+    import {Helmet} from "react-helmet";
+    import Loader from "Components/Loader";
+    import Section from "Components/Section";
+    import Message from "Components/Message";
+    import Poster from "Components/Poster";
 
-- [x] Home
-- [x] TV Shows
-- [x] Search
-- [x] Detail
+    const Container = styled.div`
+        padding: 0px 20px;
+    `;
 
-## API Verbes
+    const Form = styled.form`
+        margin-bottom: 50px;
+        width: 100%;
+    `;
 
-- [x] Now playing (Movie)
-- [x] Upcoming (Movie)
-- [x] Popular (TV, Movie)
-- [x] Top Rated (TV)
-- [x] Airing Today (TV)
-- [x] TV Show Detail
-- [x] Movie Detail
-- [x] Search (Movie, TV)
+    const Input = styled.input`
+        all: unset;
+        font-size: 28px;
+        width: 100%;
+    `;
 
-## Code Challenges
+    const SearchPresenter = ({
+        movieResults,
+        tvResults,
+        loading,
+        searchTerm,
+        handleSubmit,
+        updateTerm,
+        error
+    }) => (
+    <Container>
+        <Helmet>
+        <title>Search | Nomflix</title>
+        </Helmet>
+        <Form onSubmit={handleSubmit}>
+            <Input
+                placeholder="Search Movies or TV Show..."
+                value={searchTerm}
+                onChange={updateTerm}
+            />
+        </Form>
+        {loading ? (
+        <Loader />
+        ) : (
+            <>
+                {movieResults && movieResults.length > 0 && (
+                <Section title="Movie Results">
+                    {movieResults.map(movie => (
+                    <Poster
+                        key={movie.id}
+                        id={movie.id}
+                        imageUrl={movie.poster_path}
+                        title={movie.original_title}
+                        rating={movie.vote_average}
+                        year={movie.release_date && movie.release_date.substring(0, 4)}
+                        isMovie={true}
+                    />
+                    ))}
+                </Section>
+                )}
+                {tvResults && tvResults.length > 0 && (
+                <Section title="TV Show Results">
+                    {tvResults.map(show => (
+                    <Poster
+                        key={show.id}
+                        id={show.id}
+                        imageUrl={show.poster_path}
+                        title={show.original_name}
+                        rating={show.vote_average}
+                        year={
+                            show.first_air_date && show.first_air_date.substring(0, 4)
+                        }
+                        isMovie={false}
+                    />
+                    ))}
+                </Section>
+                )}
+                {error && <Message text={error} color="#e74c3c" />}
+                {tvResults &&
+                    movieResults &&
+                    tvResults.length === 0 &&
+                    movieResults.length === 0 && (
+                        <Message text="Nothing found" color="95a5a6" />
+                )}
+            </>
+        )}
+    </Container>
+    );
 
-- [x] IMDB Link
-- [X] Tabs inside of Movie / Show Details (YT Videos, Production Company & Countries)
-- [x] Collections Link
-- [x] /collections Route
-- [x] On TV Show, show seasons
+    SearchPresenter.propTypes = {
+        movieResults: PropTypes.array,
+        tvResults: PropTypes.array,
+        searchTerm: PropTypes.string,
+        error: PropTypes.string,
+        loading: PropTypes.bool.isRequired,
+        handleSubmit: PropTypes.func.isRequired,
+        updateTerm: PropTypes.func.isRequired
+    };
+
+    export default SearchPresenter;
+
+    ```
