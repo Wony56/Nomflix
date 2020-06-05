@@ -457,63 +457,63 @@
         updateTerm,
         error
     }) => (
-    <Container>
-        <Helmet>
-        <title>Search | Nomflix</title>
-        </Helmet>
-        <Form onSubmit={handleSubmit}>
-            <Input
-                placeholder="Search Movies or TV Show..."
-                value={searchTerm}
-                onChange={updateTerm}
-            />
-        </Form>
-        {loading ? (
-        <Loader />
-        ) : (
-            <>
-                {movieResults && movieResults.length > 0 && (
-                <Section title="Movie Results">
-                    {movieResults.map(movie => (
-                        <Poster
-                            key={movie.id}
-                            id={movie.id}
-                            imageUrl={movie.poster_path}
-                            title={movie.original_title}
-                            rating={movie.vote_average}
-                            year={movie.release_date && movie.release_date.substring(0, 4)}
-                            isMovie={true}
-                        />
-                    ))}
-                </Section>
-                )}
-                {tvResults && tvResults.length > 0 && (
-                <Section title="TV Show Results">
-                    {tvResults.map(show => (
-                        <Poster
-                            key={show.id}
-                            id={show.id}
-                            imageUrl={show.poster_path}
-                            title={show.original_name}
-                            rating={show.vote_average}
-                            year={
-                                show.first_air_date && show.first_air_date.substring(0, 4)
-                            }
-                            isMovie={false}
-                        />
-                    ))}
-                </Section>
-                )}
-                {error && <Message text={error} color="#e74c3c" />}
-                {tvResults &&
-                    movieResults &&
-                    tvResults.length === 0 &&
-                    movieResults.length === 0 && (
-                        <Message text="Nothing found" color="95a5a6" />
-                )}
-            </>
-        )}
-    </Container>
+        <Container>
+            <Helmet>
+            <title>Search | Nomflix</title>
+            </Helmet>
+            <Form onSubmit={handleSubmit}>
+                <Input
+                    placeholder="Search Movies or TV Show..."
+                    value={searchTerm}
+                    onChange={updateTerm}
+                />
+            </Form>
+            {loading ? (
+            <Loader />
+            ) : (
+                <>
+                    {movieResults && movieResults.length > 0 && (
+                    <Section title="Movie Results">
+                        {movieResults.map(movie => (
+                            <Poster
+                                key={movie.id}
+                                id={movie.id}
+                                imageUrl={movie.poster_path}
+                                title={movie.original_title}
+                                rating={movie.vote_average}
+                                year={movie.release_date && movie.release_date.substring(0, 4)}
+                                isMovie={true}
+                            />
+                        ))}
+                    </Section>
+                    )}
+                    {tvResults && tvResults.length > 0 && (
+                    <Section title="TV Show Results">
+                        {tvResults.map(show => (
+                            <Poster
+                                key={show.id}
+                                id={show.id}
+                                imageUrl={show.poster_path}
+                                title={show.original_name}
+                                rating={show.vote_average}
+                                year={
+                                    show.first_air_date && show.first_air_date.substring(0, 4)
+                                }
+                                isMovie={false}
+                            />
+                        ))}
+                    </Section>
+                    )}
+                    {error && <Message text={error} color="#e74c3c" />}
+                    {tvResults &&
+                        movieResults &&
+                        tvResults.length === 0 &&
+                        movieResults.length === 0 && (
+                            <Message text="Nothing found" color="95a5a6" />
+                    )}
+                </>
+            )}
+        </Container>
     );
 
     SearchPresenter.propTypes = {
@@ -529,3 +529,7 @@
     export default SearchPresenter;
 
     ```
+
+### 영화 및 TV 시리즈 상세 페이지
+<img src="./README_IMAGES/movie_detail.png" width="480px"></img>
+<img src="./README_IMAGES/tv_detail.png" width="480px"></img>
