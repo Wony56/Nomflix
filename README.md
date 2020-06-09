@@ -1,13 +1,13 @@
 # Nomflix
 ## 목차
-- [개요](##개요)<br/>
-- [구현소개](##구현-소개)<br/>
-    - [1. TMDb API 모듈](###1.-TMDb-API-모듈)
-    - [2. Header](###2.-Header)
-    - [3. Home(Movie page) & TV(TV Series page)](###3.-Home(Movie-page)-&-TV(TV-Series-page))
-    - [4. Search](###4.-Search)
-    - [5. 영화 및 TV 시리즈 상세 페이지](###5.-영화-및-TV-시리즈-상세-페이지)
-    - [6. Collection](###6.-Collection)
+- [개요](#개요)<br/>
+- [구현소개](#구현-소개)<br/>
+    - [1. TMDb API 모듈](#1-tmdb-api-모듈)
+    - [2. Header](#2-header)
+    - [3. Home(Movie page) & TV(TV Series page)](#3-home(movie-page)-&-tv(tv-series-page))
+    - [4. Search](#4-search)
+    - [5. 영화 및 TV 시리즈 상세 페이지](#5-영화-및-TV-시리즈-상세-페이지)
+    - [6. Collection](#6-collection)
     
 ## 개요
 <a href="https://distracted-jang-0e67d3.netlify.app/" target="_blank"><img src="./README_IMAGES/result.png" width="640px"></img></a>
